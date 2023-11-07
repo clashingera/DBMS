@@ -1,0 +1,84 @@
+question_12
+Solve Queries by SQL
+
+1.	Display customer name having living city Bombay and branch city Nagpur
+SELECT cname FROM Customers WHERE city = 'Bombay' AND cname IN (SELECT cname FROM Branch WHERE city = 'Nagpur');
+
+2.	Display customer name having same living city as their branch city
+SELECT cname FROM Customers WHERE city = (SELECT city FROM Branch WHERE bname = Customers.cname);
+
+3.	Display customer name who are borrowers as well as depositors and having living city Nagpur.
+SELECT cname FROM Customers WHERE city = (SELECT city FROM Branch WHERE bname = Customers.cname);
+
+4.	Display borrower names having deposit amount greater than 1000 and loan amount greater than 2000
+SELECT b.cname
+FROM Borrow b
+JOIN Deposit d ON b.cname = d.cname
+WHERE d.amount > 1000 AND b.amount > 2000;
+
+5.	Display customer name living in the city where branch of depositor sunil is located.
+SELECT c.cname
+FROM Customers c
+WHERE c.city = (SELECT city FROM Branch WHERE bname = (SELECT bname FROM Deposit WHERE cname = 'Sunil'));
+
+6.	Create an index on deposit table
+CREATE INDEX idx_actno ON Deposit(actno);
+
+-- Create database
+CREATE DATABASE banking_system;
+
+-- Use the created database
+USE banking_system;
+
+-- Create Deposit table
+CREATE TABLE Deposit (
+    actno INT PRIMARY KEY,
+    cname VARCHAR(255),
+    bname VARCHAR(255),
+    amount DECIMAL(10, 2),
+    adate DATE
+);
+
+-- Create Branch table
+CREATE TABLE Branch (
+    bname VARCHAR(255) PRIMARY KEY,
+    city VARCHAR(255)
+);
+
+-- Create Customers table
+CREATE TABLE Customers (
+    cname VARCHAR(255) PRIMARY KEY,
+    city VARCHAR(255)
+);
+
+-- Create Borrow table
+CREATE TABLE Borrow (
+    loanno INT PRIMARY KEY,
+    cname VARCHAR(255),
+    bname VARCHAR(255),
+    amount DECIMAL(10, 2)
+);
+
+-- Insert data into Deposit table
+INSERT INTO Deposit VALUES (1, 'John', 'Branch A', 1000.00, '2023-01-01');
+INSERT INTO Deposit VALUES (2, 'Alice', 'Branch B', 1500.00, '2023-01-02');
+INSERT INTO Deposit VALUES (3, 'Sunil', 'Branch C', 1200.00, '2023-01-03');
+ 
+
+-- Insert data into Branch table
+INSERT INTO Branch VALUES ('Branch A', 'Mumbai');
+INSERT INTO Branch VALUES ('Branch B', 'Nagpur');
+INSERT INTO Branch VALUES ('Branch C', 'Nagpur');
+ 
+
+-- Insert data into Customers table
+INSERT INTO Customers VALUES ('John', 'Mumbai');
+INSERT INTO Customers VALUES ('Alice', 'Nagpur');
+INSERT INTO Customers VALUES ('Sunil', 'Nagpur');
+ 
+
+-- Insert data into Borrow table
+INSERT INTO Borrow VALUES (1, 'Alice', 'Branch B', 500.00);
+INSERT INTO Borrow VALUES (2, 'Sunil', 'Branch C', 2500.00);
+ 
+
