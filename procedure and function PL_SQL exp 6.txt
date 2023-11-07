@@ -1,0 +1,48 @@
+create table stu_marks(roll_no int , name varchar(20),total_marks int);
+create table result(roll_no int , name varchar(20), class varchar(20));
+
+
+CREATE PROCEDURE proc_grade(IN stu_marks INT, OUT class CHAR(20))
+BEGIN
+  IF(stu_marks <= 1500 && stu_marks >= 990) THEN
+    SET class = 'distinction';
+  END IF;
+  
+  IF(stu_marks <= 989 && stu_marks >= 890) THEN
+    SET class = 'first class';
+  END IF;
+  
+  IF(stu_marks <= 889 && stu_marks >= 825) THEN
+    SET class = 'second class';
+  END IF;
+  
+  IF(stu_marks <= 824 && stu_marks >= 650) THEN
+    SET class = 'passed';
+  END IF;
+  
+  IF(stu_marks <= 649) THEN
+    SET class = 'failed';
+  END IF;
+END;
+
+
+CREATE FUNCTION final_result1(r1 INT)
+RETURNS INT DETERMINISTIC
+BEGIN
+  DECLARE fmarks INT; 
+  DECLARE stu_name VARCHAR(20);
+  DECLARE grade VARCHAR(20);
+  
+  SELECT total_marks, name INTO fmarks, stu_name FROM stu_marks 
+  WHERE rol_no = r1;
+  
+  CALL proc_grade(fmarks, @grade);
+  
+  INSERT INTO result (rol_no, student_name, grade) VALUES (r1, stu_name, @grade);
+  
+  RETURN r1;
+END;
+
+
+select final_result1(1);
+//

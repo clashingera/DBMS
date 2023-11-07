@@ -1,0 +1,25 @@
+circle area exp 6
+ create table areas(radius float,area float);
+
+
+delimiter //
+create procedure find_circle_area()
+begin
+declare r float;
+declare a float;
+set r=5;
+loop_label:loop
+if r>9 then
+leave loop_label;
+end if;
+set a=3.14*r*r;
+insert into areas(radius,area)values(r,a);
+set r=r+1;
+end loop;
+end;
+//
+
+call find_circle_areas();
+//
+
+select * from areas;

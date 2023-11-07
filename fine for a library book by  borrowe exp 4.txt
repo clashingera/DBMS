@@ -1,0 +1,28 @@
+fine for a library book by  borrower
+
+create table borrower(roll_no int,name varchar(20),DOI date,name_of_book varchar(20),status varchar(20));
+
+create table fine( roll_no int,fine int);
+
+ create procedure a(roll_new int,book_name varchar(20))
+ begin
+ declare x integer ;
+ declare continue handler for not found
+ begin
+ select 'NOT FOUND';
+ end;
+ select datediff(curdate(),DOI) into x from borrower where roll_no=roll_new;
+ if(x>15 && x<30)
+ then
+ insert into fine values(roll_new,(x*5));
+ end if;
+ if(x>30)
+ then
+ insert into fine values(roll_new,(x*50));
+end if;
+update borrower set status='returned' where roll_no=roll_new;
+end;
+//
+
+
+call a(1,'DBMS');

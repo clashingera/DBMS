@@ -1,0 +1,33 @@
+exp 8 trigger
+create table borrower(roll_no int,name varchar(20),DOI date,name_of_book varchar(20),status varchar(20));
+
+
+create table audit(roll_no int, name varchar(20),DOI date, name_of_book varchar(20),status varchar(20),remark varchar(20));
+
+create trigger audit1
+after insert on borrower
+for each row
+begin
+insert into audit value(new.roll_no,new.name,new.DOI,new.name_of_book,new.status,'deleted');
+end;
+//
+
+insert into borrower value(1,'ram','2023-09-28','DSA','issued');
+create trigger audit2
+after delete on borrower
+for each row
+begin
+insert into audit value(old.roll_no,old.name,old.DOI,old.name_of_book,old.status,'deleted');
+end;
+//
+
+delete from borrower where roll_no=1;
+
+create trigger audit3
+after update on borrower
+for each row
+begin
+insert into audit value(new.roll_no,new.name,new.DOI,new.name_of_book,new.status,'deleted');
+end;
+//
+update borrower set name='abhi' where name='ram';
