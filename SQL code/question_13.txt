@@ -1,0 +1,127 @@
+question_13
+1.	Retrieve city, phone, url of author whose name is ‘CHETAN BHAGAT’.
+SELECT CITY, PHONE, URL FROM AUTHOR WHERE ANAME = 'CHETAN BHAGAT';
+
+2.	Retrieve book title, reviewable id and rating of all books.
+SELECT b.BOOK_TITLE, r.RID, r.RATING
+FROM BOOK b
+JOIN REVIEW r ON b.ISBN = r.ISBN;
+
+3.	Retrieve book title, price, author name and url for publishers ‘MEHTA’.
+SELECT b.BOOK_TITLE, b.PRICE, a.ANAME, a.URL
+FROM BOOK b
+JOIN AUTHOR_BOOK ab ON b.ISBN = ab.ISBN
+JOIN AUTHOR a ON ab.AID = a.AID
+WHERE b.PID = 1;
+
+4.	In a PUBLISHER relation change the phone number of ‘MEHTA’ to 123456
+UPDATE PUBLISHER SET PHONE = '123456' WHERE PNAME = 'MEHTA';
+
+5.	Calculate and display the average, maximum, minimum price of each publisher.
+SELECT PID, AVG(PRICE) AS AVG_PRICE, MAX(PRICE) AS MAX_PRICE, MIN(PRICE) AS MIN_PRICE
+FROM BOOK
+GROUP BY PID;
+
+6.	Delete details of all books having a page count less than 100.
+DELETE FROM BOOK WHERE PAGE_COUNT < 100;
+
+7.	Retrieve details of all authors residing in city Pune and whose name begins with character 'C'.
+SELECT * FROM AUTHOR WHERE CITY = 'Pune' AND ANAME LIKE 'C%';
+
+8.	Retrieve details of authors residing in same city as ‘Korth’.
+SELECT a.*
+FROM AUTHOR a
+WHERE CITY = (SELECT CITY FROM AUTHOR WHERE ANAME = 'Korth');
+
+9.	Create a procedure to update the value of page count of a book of given ISBN.
+DELIMITER //
+
+CREATE PROCEDURE UpdatePageCount(IN ISBN_param VARCHAR(255), IN newPageCount INT)
+BEGIN
+    UPDATE BOOK SET PAGE_COUNT = newPageCount WHERE ISBN = ISBN_param;
+END//
+
+DELIMITER ;
+
+10.	Create a function that returns the price of book with a given ISBN.
+DELIMITER //
+
+CREATE FUNCTION GetPriceByISBN(ISBN_param VARCHAR(255)) RETURNS DECIMAL(10, 2)
+BEGIN
+    DECLARE bookPrice DECIMAL(10, 2);
+    SELECT PRICE INTO bookPrice FROM BOOK
+
+
+-- Create database
+CREATE DATABASE book_publishing;
+
+-- Use the created database
+USE book_publishing;
+
+-- Create PUBLISHER table
+CREATE TABLE PUBLISHER (
+    PID INT PRIMARY KEY,
+    PNAME VARCHAR(255),
+    ADDRESS VARCHAR(255),
+    STATE VARCHAR(255),
+    PHONE VARCHAR(15),
+    EMAILID VARCHAR(255)
+);
+
+-- Create BOOK table
+CREATE TABLE BOOK (
+    ISBN VARCHAR(255) PRIMARY KEY,
+    BOOK_TITLE VARCHAR(255),
+    CATEGORY VARCHAR(255),
+    PRICE DECIMAL(10, 2),
+    COPYRIGHT_DATE DATE,
+    YEAR INT,
+    PAGE_COUNT INT,
+    PID INT,
+    FOREIGN KEY (PID) REFERENCES PUBLISHER(PID)
+);
+
+-- Create AUTHOR table
+CREATE TABLE AUTHOR (
+    AID INT PRIMARY KEY,
+    ANAME VARCHAR(255),
+    STATE VARCHAR(255),
+    CITY VARCHAR(255),
+    ZIP VARCHAR(10),
+    PHONE VARCHAR(15),
+    URL VARCHAR(255)
+);
+
+-- Create AUTHOR_BOOK table
+CREATE TABLE AUTHOR_BOOK (
+    AID INT,
+    ISBN VARCHAR(255),
+    FOREIGN KEY (AID) REFERENCES AUTHOR(AID),
+    FOREIGN KEY (ISBN) REFERENCES BOOK(ISBN)
+);
+
+-- Create REVIEW table
+CREATE TABLE REVIEW (
+    RID INT PRIMARY KEY,
+    ISBN VARCHAR(255),
+    RATING INT,
+    FOREIGN KEY (ISBN) REFERENCES BOOK(ISBN)
+);
+
+-- Insert data into PUBLISHER table
+INSERT INTO PUBLISHER VALUES (1, 'MEHTA', '123 Main St', 'State1', '9876543210', 'mehta@example.com');
+
+-- Insert data into BOOK table
+INSERT INTO BOOK VALUES ('123456789', 'Book Title 1', 'Fiction', 19.99, '2023-01-01', 2023, 150, 1);
+
+-- Insert data into AUTHOR table
+INSERT INTO AUTHOR VALUES (1, 'CHETAN BHAGAT', 'State1', 'Pune', '123456', '9876543210', 'chetanbhagat.com');
+
+-- Insert data into AUTHOR_BOOK table
+INSERT INTO AUTHOR_BOOK VALUES (1, '123456789');
+
+-- Insert data into REVIEW table
+INSERT INTO REVIEW VALUES (1, '123456789', 4);
+
+ 
+
