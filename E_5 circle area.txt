@@ -19,7 +19,7 @@ end loop;
 end;
 //
 
-call find_circle_areas();
+call find_circle_area();
 //
 
 select * from areas;
