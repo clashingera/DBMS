@@ -1,11 +1,12 @@
 exp 7 cursor
 
 create table o_rollcall(roll_no int, name varchar(20) ,address varchar(20));
+insert into o_rollcall values(1,'atharva','titn');
 
-
+insert into o_rollcall values(2,'aaglave','Surya');
 create table n_rollcall(roll_no int, name varchar(20), address varchar(20));
 
-
+delimiter //
 create procedure p1(in r1 int)
 begin
 declare r2 int;
@@ -31,5 +32,6 @@ end if;
 end loop e_loop;
 end;
 //
-
+select * from o_rollcall;
 call p1(1);
+select * from n_rollcall;
