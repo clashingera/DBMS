@@ -1,0 +1,76 @@
+question_11
+
+-- Create database
+CREATE DATABASE banking_system;
+
+-- Use the created database
+USE banking_system;
+
+-- Create Deposit table
+CREATE TABLE Deposit (
+    actno INT PRIMARY KEY,
+    cname VARCHAR(255),
+    bname VARCHAR(255),
+    amount DECIMAL(10, 2),
+    adate DATE
+);
+
+-- Create Branch table
+CREATE TABLE Branch (
+    bname VARCHAR(255) PRIMARY KEY,
+    city VARCHAR(255)
+);
+
+-- Create Customers table
+CREATE TABLE Customers (
+    cname VARCHAR(255) PRIMARY KEY,
+    city VARCHAR(255)
+);
+
+-- Create Borrow table
+CREATE TABLE Borrow (
+    loanno INT PRIMARY KEY,
+    cname VARCHAR(255),
+    bname VARCHAR(255),
+    amount DECIMAL(10, 2)
+);
+
+-- Insert data into Deposit table
+INSERT INTO Deposit VALUES (1, 'John', 'Branch A', 1000.00, '2023-01-01');
+INSERT INTO Deposit VALUES (2, 'Alice', 'Branch B', 1500.00, '2023-01-02');
+ 
+-- Insert data into Branch table
+INSERT INTO Branch VALUES ('Branch A', 'Bombay');
+INSERT INTO Branch VALUES ('Branch B', 'Pune');
+ 
+
+-- Insert data into Customers table
+INSERT INTO Customers VALUES ('Anil', 'Pune');
+INSERT INTO Customers VALUES ('Sunil', 'Delhi');
+ 
+
+-- Insert data into Borrow table
+INSERT INTO Borrow VALUES (1, 'Alice', 'Branch B', 500.00);
+ 
+Insert data into the above created tables.
+a.	Display account date of customers Anil.
+SELECT adate FROM Deposit WHERE cname = 'Anil';
+
+b.	Modify the size of attribute of amount in deposit
+ALTER TABLE Deposit MODIFY COLUMN amount DECIMAL(15, 2);
+
+c.	Display names of customers living in city pune.
+SELECT cname FROM Customers WHERE city = 'Pune';
+
+d.	Display name of the city where branch KAROLBAGH is located.
+SELECT city FROM Branch WHERE bname = 'KAROLBAGH';
+
+e.	Find the number of tuples in the customer relation
+SELECT COUNT(*) AS num_customers FROM Customers;
+
+f.	Delete all the record of customers Sunil
+DELETE FROM Customers WHERE cname = 'Sunil';
+
+g.	Create a view on deposit table.
+CREATE VIEW DepositView AS
+SELECT * FROM Deposit;
