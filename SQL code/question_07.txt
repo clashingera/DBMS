@@ -1,0 +1,77 @@
+question 7
+-- Create database
+CREATE DATABASE project_management;
+
+-- Use the created database
+USE project_management;
+
+-- Create Project table
+CREATE TABLE Project (
+    project_id VARCHAR(255) PRIMARY KEY,
+    proj_name VARCHAR(255),
+    chief_arch VARCHAR(255)
+);
+
+-- Create Employee table
+CREATE TABLE Employee (
+    Emp_id INT PRIMARY KEY,
+    Emp_name VARCHAR(255)
+);
+
+-- Create Assigned-To table
+CREATE TABLE Assigned_To (
+    Project_id VARCHAR(255),
+    Emp_id INT,
+    FOREIGN KEY (Project_id) REFERENCES Project(project_id),
+    FOREIGN KEY (Emp_id) REFERENCES Employee(Emp_id)
+);
+
+-- Insert data into Project table
+INSERT INTO Project VALUES ('C353', 'Project C353', 'John Doe');
+INSERT INTO Project VALUES ('C354', 'Project C354', 'Alice Johnson');
+ 
+
+-- Insert data into Employee table
+INSERT INTO Employee VALUES (1, 'John Smith');
+INSERT INTO Employee VALUES (2, 'Alice Williams');
+ 
+
+-- Insert data into Assigned-To table
+INSERT INTO Assigned_To VALUES ('C353', 1);
+INSERT INTO Assigned_To VALUES ('C353', 2);
+INSERT INTO Assigned_To VALUES ('C354', 2);
+
+
+
+1.	Get the details of employees working on project C353
+SELECT e.*
+FROM Employee e
+JOIN Assigned_To a ON e.Emp_id = a.Emp_id
+WHERE a.Project_id = 'C353';
+
+2.	Get employee number of employees working on project C353
+SELECT e.Emp_id
+FROM Employee e
+JOIN Assigned_To a ON e.Emp_id = a.Emp_id
+WHERE a.Project_id = 'C353';
+
+3.	Obtain details of employees working on Database project
+SELECT e.*
+FROM Employee e
+JOIN Assigned_To a ON e.Emp_id = a.Emp_id
+JOIN Project p ON a.Project_id = p.project_id
+WHERE p.proj_name = 'Database Project';
+
+4.	Get details of employees working on both C353 and C354
+SELECT e.*
+FROM Employee e
+JOIN Assigned_To a ON e.Emp_id = a.Emp_id
+WHERE a.Project_id IN ('C353', 'C354')
+GROUP BY e.Emp_id
+HAVING COUNT(DISTINCT a.Project_id) = 2;
+
+5.	Get employee numbers of employees who do not work on project C453
+SELECT e.Emp_id
+FROM Employee e
+LEFT JOIN Assigned_To a ON e.Emp_id = a.Emp_id AND a.Project_id = 'C453'
+WHERE a.Project_id IS NULL;
