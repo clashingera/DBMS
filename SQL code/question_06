@@ -1,0 +1,118 @@
+--question_6
+-- Create database
+CREATE DATABASE hotel_management;
+
+-- Use the created database
+USE hotel_management;
+
+-- Create Hotel table
+CREATE TABLE Hotel (
+    HotelNo INT PRIMARY KEY,
+    Name VARCHAR(255),
+    City VARCHAR(255)
+);
+
+-- Create Guest table
+CREATE TABLE Guest (
+    GuestNo INT PRIMARY KEY,
+    GuestName VARCHAR(255),
+    GuestAddress VARCHAR(255)
+);
+
+
+-- Create Room table
+CREATE TABLE Room (
+    RoomNo INT PRIMARY KEY,
+    HotelNo INT,
+    Type VARCHAR(255),
+    Price DECIMAL(10, 2),
+    FOREIGN KEY (HotelNo) REFERENCES Hotel(HotelNo)
+);
+
+-- Create Booking table
+CREATE TABLE Booking (
+    HotelNo INT,
+    GuestNo INT,
+    DateFrom DATE,
+    DateTo DATE,
+    RoomNo INT,
+    FOREIGN KEY (HotelNo) REFERENCES Hotel(HotelNo),
+    FOREIGN KEY (RoomNo) REFERENCES Room(RoomNo)
+);
+
+
+-- Insert data into Hotel table
+INSERT INTO Hotel VALUES (1, 'Grosvenor Hotel', 'London');
+ 
+
+-- Insert data into Room table
+INSERT INTO Room VALUES (101, 1, 'Double', 80.00);
+INSERT INTO Room VALUES (102, 1, 'Single', 60.00);
+ 
+
+-- Insert data into Guest table
+INSERT INTO Guest VALUES (1, 'John Smith', '123 Main St');
+INSERT INTO Guest VALUES (2, 'Alice Johnson', '456 Elm St');
+ 
+
+-- Insert data into Booking table
+INSERT INTO Booking VALUES (1, 1, '2023-11-01', '2023-11-05', 101);
+INSERT INTO Booking VALUES (1, 2, '2023-11-03', '2023-11-07', 102);
+
+1.	List full details of all hotels.
+SELECT * FROM Hotel;
+
+2.	List full details of all hotels in London.
+SELECT * FROM Hotel WHERE City = 'London';
+
+3.	List all guests currently staying at the Grosvenor Hotel.
+SELECT g.*
+FROM Guest g
+JOIN Booking b ON g.GuestNo = b.GuestNo
+WHERE b.HotelNo = 1 AND CURDATE() BETWEEN b.DateFrom AND b.DateTo;
+
+4.	List the names and addresses of all guests in London, alphabetically ordered by name.
+SELECT g.GuestName, g.GuestAddress
+FROM Guest g
+JOIN Booking b ON g.GuestNo = b.GuestNo
+JOIN Hotel h ON b.HotelNo = h.HotelNo
+WHERE h.City = 'London'
+ORDER BY g.GuestName;
+
+5.	List the bookings for which no date_to has been specified.
+SELECT * FROM Booking WHERE DateTo IS NULL;
+
+6.	How many hotels are there?
+SELECT COUNT(*) FROM Hotel;
+
+7.	List the rooms that are currently unoccupied at the Grosvenor Hotel.
+SELECT r.*
+FROM Room r
+LEFT JOIN Booking b ON r.RoomNo = b.RoomNo
+WHERE b.RoomNo IS NULL OR CURDATE() NOT BETWEEN b.DateFrom AND b.DateTo;
+
+8.	What is the lost income from unoccupied rooms at each hotel today?
+SELECT h.HotelNo, h.Name, SUM(r.Price) AS LostIncome
+FROM Hotel h
+JOIN Room r ON h.HotelNo = r.HotelNo
+LEFT JOIN Booking b ON r.RoomNo = b.RoomNo
+WHERE b.RoomNo IS NULL OR CURDATE() NOT BETWEEN b.DateFrom AND b.DateTo
+GROUP BY h.HotelNo, h.Name;
+
+9.	Create index on one of the field and show is performance in query.
+-- Creating an index on Room table's HotelNo column
+CREATE INDEX idx_HotelNo ON Room(HotelNo);
+-- You can observe the performance improvement in subsequent queries involving the Room table and HotelNo column.
+
+10.	Create one view on above database and query it.
+-- Creating a view that lists all bookings with guest details and hotel information
+CREATE VIEW BookingDetails AS
+SELECT b.HotelNo, b.GuestNo, b.DateFrom, b.DateTo, r.RoomNo, r.Type AS RoomType, r.Price, g.GuestName, g.GuestAddress, h.Name AS HotelName, h.City
+FROM Booking b
+JOIN Room r ON b.RoomNo = r.RoomNo
+JOIN Guest g ON b.GuestNo = g.GuestNo
+JOIN Hotel h ON b.HotelNo = h.HotelNo;
+
+-- Querying the created view
+SELECT * FROM BookingDetails WHERE City = 'London';
+
