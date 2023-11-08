@@ -1,0 +1,46 @@
+we have to solve questions the mongo question please solve the queries and also suggest what question can teachers ask related to that question
+
+Design and Implement following query using MongoDB
+
+
+
+and here are questions also give the output of each query
+Solve Queries by mongodb
+
+1.	Create a collection called ‘games’.
+  db.createCollection("games");
+
+
+2.	Add 5 games to the database. Give each document the following properties: name, gametype, rating (out of 100)
+db.games.insertMany([
+  { name: "Game1", gametype: "Action", rating: 85 },
+  { name: "Game2", gametype: "Adventure", rating: 90 },
+  { name: "Game3", gametype: "Puzzle", rating: 78 },
+  { name: "Game4", gametype: "RPG", rating: 95 },
+  { name: "Game5", gametype: "Sports", rating: 88 }
+]);
+
+3.	Write a query that returns all the games
+  db.games.find({});
+
+4.	Write a query that returns the 3 highest rated games.
+  db.games.find().sort({ rating: -1 }).limit(3);
+
+5.	Update your two favourite games to have two achievements called ‘Game Master’ and ‘Speed Demon’.
+  db.games.updateMany(
+  { name: { $in: ["Game1", "Game2"] } },
+  {
+    $set: {
+      achievements: ["Game Master", "Speed Demon"]
+    }
+  }
+);
+
+6.	Write a query that returns all the games that have both the ‘Game Maser’ and
+  db.games.find({ achievements: { $all: ["Game Master", "Speed Demon"] } });
+
+7.	the ‘Speed Demon’ achievements.
+  db.games.find({ achievements: { $exists: true, $ne: [] } });
+
+  
+8.	Write a query that returns only games that have achievements.
